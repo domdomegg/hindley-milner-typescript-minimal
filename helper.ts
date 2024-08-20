@@ -40,7 +40,8 @@ function apply(s: Substitution, value: MonoType | PolyType | Context): MonoType 
   }
 
   if (value.type === "ty-quantifier") {
-    return { ...value, sigma: apply(s, value.sigma) };
+    const substitutionWithoutQuantifier = makeSubstitution(Object.fromEntries(Object.entries(s.raw).filter(([k, v]) => k !== value.a)));
+    return { ...value, sigma: apply(substitutionWithoutQuantifier, value.sigma) };
   }
 
   throw new Error('Unknown argument passed to substitution')
