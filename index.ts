@@ -27,5 +27,5 @@ console.dir(W(
     'false': { type: 'ty-app', C: 'Bool', mus: [] },
     'one': { type: 'ty-app', C: 'Int', mus: [] },
   }),
-  parse('odd true'),
+  parse('odd one'),
 )[1], { depth: Infinity });
