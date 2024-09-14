@@ -162,7 +162,7 @@ export const unify = (type1: MonoType, type2: MonoType): Substitution => {
 
   let s: Substitution = makeSubstitution({})
   for (let i = 0; i < type1.mus.length; i++) {
-    s = s(unify(s(type1.mus[i]), s(type2.mus[i])))
+    s = (unify(s(type1.mus[i]), s(type2.mus[i])))(s)
   }
   return s;
 }
