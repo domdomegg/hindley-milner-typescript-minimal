@@ -40,8 +40,21 @@ function apply(s: Substitution, value: MonoType | PolyType | Context): MonoType 
   }
 
   if (value.type === "ty-quantifier") {
-    const substitutionWithoutQuantifier = makeSubstitution(Object.fromEntries(Object.entries(s.raw).filter(([k, v]) => k !== value.a)));
-    return { ...value, sigma: apply(substitutionWithoutQuantifier, value.sigma) };
+    // If the quantifier variable conflicts with any substitution...
+    if (s.raw[value.a] || Object.values(s.raw).some(t => freeVars(t).includes(value.a))) {
+      // Rename the quantifier variable
+      const aPrime = newTypeVar();
+      const renamedSigma = apply(makeSubstitution({ [value.a]: aPrime }), value.sigma);
+      
+      // Apply the original substitution to the renamed sigma
+      return {
+        ...value,
+        a: aPrime.a,
+        sigma: apply(s, renamedSigma)
+      };
+    }
+
+    return { ...value, sigma: apply(s, value.sigma) };
   }
 
   throw new Error('Unknown argument passed to substitution')
